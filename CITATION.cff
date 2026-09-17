@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+title: "BinuclearFe-ML: machine learning-guided prioritization of binuclear iron fertilizer complexes"
+type: software
+authors:
+  - family-names: Kurbanov
+    given-names: David
+    affiliation: "Center for Artificial Intelligence in Chemistry, ITMO University"
+repository-code: "https://github.com/KurbanovDavid777/binuclear-fe-ml"
+license: MIT
+version: 1.0.0
+date-released: 2026-09-17
+keywords:
+  - cheminformatics
+  - novelty detection
+  - isolation forest
+  - ChemBERTa
+  - iron fertilizers
+  - coordination chemistry

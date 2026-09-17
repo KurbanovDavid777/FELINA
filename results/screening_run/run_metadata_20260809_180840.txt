@@ -1,0 +1,12 @@
+
+Date scrinig: 2026-08-09 18:03:32.226280
+Python: 3.12.13 (main, Mar  4 2026, 09:23:07) [GCC 11.4.0]
+torch: 2.11.0+cpu
+sklearn: 1.6.1
+numpy: 2.0.2
+transformers: 5.13.1
+pandas: 2.2.2
+CUDA available: False
+
+Dataset hash: 29b7dabf18252265bb49ef48cb509227
+Model revision: f5c45f44d3061f0346888f5c09db17ec1146d29
