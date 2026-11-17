@@ -1,8 +1,8 @@
 <div align="center">
 
-# BinuclearFe-ML
+# FELINA
 
-**Machine learning-guided prioritization of binuclear iron complexes as micronutrient fertilizers**
+**Fe Ligand–metal Isolation-forest Novelty Assessment: machine learning-guided prioritization of iron coordination compounds as micronutrient fertilizers**
 
 [![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-F7931E.svg)](https://scikit-learn.org/)
@@ -11,7 +11,7 @@
 [![Data license: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-lightgrey.svg)](data/LICENSE)
 
 Code and data accompanying the manuscript<br>
-*Machine Learning-Guided Discovery of Binuclear Iron Fertilizer Complexes: From Virtual Screening to Agronomic Validation in Light-Cultured* Diplotaxis tenuifolia
+*Machine Learning-Guided Discovery of Iron Fertilizer Complexes: From Virtual Screening to Agronomic Validation in Light-Cultured* Diplotaxis tenuifolia
 
 Center for Artificial Intelligence in Chemistry, ITMO University
 
@@ -21,14 +21,14 @@ Center for Artificial Intelligence in Chemistry, ITMO University
 
 ## Overview
 
-Commercial iron fertilizers are almost exclusively mononuclear chelates (Fe-EDTA, Fe-DTPA, Fe-EDDHA). This repository contains the computational part of a study evaluating **heterobimetallic and binuclear iron coordination complexes** as an alternative iron-delivery motif.
+Commercial iron fertilizers are almost exclusively mononuclear chelates (Fe-EDTA, Fe-DTPA, Fe-EDDHA). This repository contains the computational part of a study evaluating **iron coordination compounds, including heterobimetallic ones,** as an alternative iron-delivery motif.
 
-Because crystallographic databases record compounds that *were* made, but not those that failed, the task is framed as **one-class novelty detection**: candidates are ranked by how closely they resemble the distribution of experimentally characterized binuclear Fe complexes from the [Crystallography Open Database](https://www.crystallography.net/cod/).
+Because crystallographic databases record compounds that *were* made, but not those that failed, the task is framed as **one-class novelty detection**: candidates are ranked by how closely they resemble the distribution of experimentally characterized bimetallic Fe complexes from the [Crystallography Open Database](https://www.crystallography.net/cod/).
 
 - **Reference set:** 834 bimetallic Fe complexes from COD, 8 metal-pair groups
 - **Representations:** composition/physicochemical descriptors vs. 768-d ChemBERTa embeddings
 - **Novelty models:** Isolation Forest, Local Outlier Factor, One-Class SVM; out-of-fold scoring, 10 random seeds
-- **Screening:** 20-member laboratory-accessible virtual library ranked by an 80-model Isolation Forest hyperparameter ensemble
+- **Screening:** 20-member laboratory-accessible virtual library ranked with Isolation Forest over 80 hyperparameter settings (sensitivity analysis)
 - **Filtering:** RDKit substructure/elemental filters and active-payload mass fraction
 
 Two prioritized candidates, **P09** (NEt₄)[Fe(H₂O)₂(Mal)₂] and **P13** {(NH₄)[BaFe(H₂O)₅(Mal)₃]·H₂O}ₙ, were synthesized and tested on *Diplotaxis tenuifolia* (experimental details are in the manuscript).
@@ -41,7 +41,7 @@ flowchart LR
     B --> C1[Descriptors]
     B --> C2[ChemBERTa<br/>embeddings, 768-d]
     C1 & C2 --> D[Novelty models<br/>IF · LOF · OC-SVM<br/>4-fold OOF × 10 seeds]
-    D -->|representation chosen:<br/>ChemBERTa + IF| E[80-model IF ensemble]
+    D -->|representation chosen:<br/>ChemBERTa + IF| E[IF sensitivity analysis<br/>80 hyperparameter settings]
     L[Virtual library<br/>P01–P20] --> E
     E --> F[Top-10 by mean rank]
     F --> G[RDKit filters<br/>+ payload density]
@@ -56,14 +56,14 @@ flowchart LR
 │   ├── data_train.csv                # curated COD reference set (834 × descriptors + ChemBERTa embeddings)
 │   ├── chemberta_embeddings.parquet  # ChemBERTa embeddings keyed by cod_id
 │   ├── virtual_library.csv           # 20 candidate complexes (P01–P20)
-│   ├── top_10.csv                    # ensemble-selected shortlist
+│   ├── top_10.csv                    # top-10 shortlist by mean rank
 │   └── README.md                     # data dictionary
 ├── notebooks/
 │   ├── 01_representation_benchmark.ipynb  # representation × algorithm comparison, seed robustness
-│   ├── 02_ensemble_screening.ipynb        # library embedding + 80-model ensemble ranking
+│   ├── 02_ensemble_screening.ipynb        # library embedding + ranking over 80 hyperparameter settings
 │   └── 03_candidate_filtering.ipynb       # RDKit filters and active-payload density
 ├── results/
-│   └── screening_run/                # ensemble ranking, run metadata, environment log
+│   └── screening_run/                # aggregate ranking, run metadata, environment log
 ├── requirements.txt
 ├── CITATION.cff
 └── LICENSE
@@ -72,8 +72,8 @@ flowchart LR
 ## Installation
 
 ```bash
-git clone https://github.com/KurbanovDavid777/binuclear-fe-ml.git
-cd binuclear-fe-ml
+git clone https://github.com/KurbanovDavid777/FELINA.git
+cd FELINA
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -97,7 +97,7 @@ jupyter lab
 
 ## Results
 
-Aggregate ranking of the virtual library across the 80-model ensemble ([`results/screening_run/summary_20260809_180516.csv`](results/screening_run/summary_20260809_180516.csv)). Lower mean rank = closer to known binuclear Fe chemistry. **Bold** — synthesized compounds.
+Aggregate ranking of the virtual library across 80 Isolation Forest hyperparameter settings ([`results/screening_run/summary_20260809_180516.csv`](results/screening_run/summary_20260809_180516.csv)). Lower mean rank = closer to known bimetallic Fe chemistry. **Bold** — synthesized compounds.
 
 | # | ID | Formula | Ligand | 2nd metal | Mean rank ± SD | Top-10, % | Shortlist |
 |---|---|---|---|---|---|---|---|
@@ -124,7 +124,7 @@ Aggregate ranking of the virtual library across the 80-model ensemble ([`results
 
 ## Scope and limitations
 
-The novelty score estimates **structural plausibility relative to known binuclear Fe chemistry**. It is not a predictor of reaction feasibility, stability, solubility or agronomic efficacy, and was used only as a prioritization filter over a laboratory-accessible shortlist. Component SMILES do not encode metal–ligand connectivity or coordination geometry. See the manuscript (Section 3.10) for a full discussion.
+The novelty score estimates **structural plausibility relative to known bimetallic Fe chemistry**. It is not a predictor of reaction feasibility, stability, solubility or agronomic efficacy, and was used only as a prioritization filter over a laboratory-accessible shortlist. Component SMILES do not encode metal–ligand connectivity or coordination geometry. See the Conclusion of the manuscript for a full discussion.
 
 ## Data sources
 
